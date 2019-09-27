@@ -127,3 +127,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'core.User'
+
+URL_PRODUCTION = 'www.cotizate.com'
+DEFAULT_FROM_EMAIL = 'info@cotizate.com'

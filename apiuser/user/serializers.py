@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+from apiuser.celery import send_email_message
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,7 +14,23 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         """create a new user with encrypted password and return it"""
-        return get_user_model().objects.create_user(**validate_data)
+        user_instance = get_user_model().objects.create(**validate_data)
+        # send email confirmation
+        email_context = {
+                'fullname': '{}'.format(validate_data['name']),
+                'domain': f'{settings.URL_PRODUCTION}/email-confirmation',
+                'uid': 'asdf2123',
+                'token': 'token-id'
+        }
+        send_email_message.delay(
+                subject='No reply',
+                to=[validate_data['email'], ],
+                body='',
+                template_name='email/profile/activate-account-confirmation.html',
+                context=email_context,
+        )
+
+        return user_instance
 
     def update(self, instance, validated_data):
         """update a user, setting the password correctly and return it"""
