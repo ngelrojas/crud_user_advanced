@@ -1,13 +1,9 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
-
-import os
-from decimal import Decimal
-import requests
-from celery import Celery
-from celery import shared_task
+from celery import Celery, shared_task
 from django.conf import settings
 from core.email import CotizateSendEmail
+import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'apiuser.settings')
 app = Celery('apiuser', broker='pyamqp://guest@localhost//')
@@ -19,8 +15,9 @@ app.autodiscover_tasks()
 
 @shared_task(bind=True)
 def send_email_message(
-        self, subject, to, body, template_name=None, context=None
-    ):
+        self, subject, to, body,
+        template_name=None,
+        context=None):
     try:
         CotizateSendEmail(
                 subject=subject,

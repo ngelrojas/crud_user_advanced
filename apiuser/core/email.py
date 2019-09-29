@@ -1,7 +1,3 @@
-import json
-import os
-
-from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -25,8 +21,7 @@ class CotizateSendEmail(EmailMultiAlternatives):
     def __init__(
             self, subject='', body='', from_email=None, to=None, bcc=None,
             connection=None, attachments=None, headers=None, cc=None,
-            reply_to=None,
-        ):
+            reply_to=None,):
         """initialize parent class with the default attrs"""
         super().__init__(
                 subject, body, from_email, to, bcc,
@@ -35,10 +30,8 @@ class CotizateSendEmail(EmailMultiAlternatives):
         )
 
     def send_email_with_custom_template(
-            self, template_name: str, context: dict,
-        ):
+            self, template_name: str, context: dict,):
         email_html_message = render_to_string(template_name, context)
         self.attach_alternative(email_html_message, 'text/html')
         self.send(fail_silently=False)
         return self
-

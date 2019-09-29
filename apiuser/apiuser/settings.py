@@ -58,7 +58,7 @@ ROOT_URLCONF = 'apiuser.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,6 +107,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'mail.ngelrojasp.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'me@ngelrojasp.com'
+EMAIL_HOST_PASSWORD = 'mengelrojas2019'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+DEFAULT_FROM_EMAIL = 'me@ngelrojasp.com'
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -129,4 +138,3 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'core.User'
 
 URL_PRODUCTION = 'www.cotizate.com'
-DEFAULT_FROM_EMAIL = 'info@cotizate.com'

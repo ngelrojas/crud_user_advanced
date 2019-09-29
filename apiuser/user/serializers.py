@@ -22,11 +22,12 @@ class UserSerializer(serializers.ModelSerializer):
                 'uid': 'asdf2123',
                 'token': 'token-id'
         }
-        send_email_message.delay(
+        tmp_name = 'emails/profile/activation-account-confirmation.html'
+        send_email_message(
                 subject='No reply',
                 to=[validate_data['email'], ],
                 body='',
-                template_name='email/profile/activate-account-confirmation.html',
+                template_name=tmp_name,
                 context=email_context,
         )
 
