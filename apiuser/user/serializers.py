@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from apiuser.celery import send_email_message
+from core.tokens import encode_user_id, make_user_token
+from core.models import CodeActivation
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,11 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
         """create a new user with encrypted password and return it"""
         user_instance = get_user_model().objects.create(**validate_data)
         # send email confirmation
+        uid = encode_user_id(user_instance.id)
+        token = make_user_token(user_instance)
         email_context = {
                 'fullname': '{}'.format(validate_data['name']),
                 'domain': f'{settings.URL_PRODUCTION}/email-confirmation',
-                'uid': 'asdf2123',
-                'token': 'token-id'
+                'uid': uid,
+                'token': token
         }
         tmp_name = 'emails/profile/activation-account-confirmation.html'
         send_email_message(
@@ -29,6 +33,11 @@ class UserSerializer(serializers.ModelSerializer):
                 body='',
                 template_name=tmp_name,
                 context=email_context,
+        )
+        CodeActivation.objects.create(
+               code_token=uid+'_'+token,
+               is_expired=False,
+               user=user_instance
         )
 
         return user_instance

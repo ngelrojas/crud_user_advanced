@@ -137,4 +137,5 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'core.User'
 
-URL_PRODUCTION = 'www.cotizate.com'
+# URL_PRODUCTION = 'http://www.cotizate.com'
+URL_PRODUCTION = 'http://127.0.0.1:8000'

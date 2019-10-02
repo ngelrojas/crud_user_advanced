@@ -1,16 +1,17 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core import mail
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode,\
-        urlsasfe_base64_decode
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
-from core.tokens import account_activation_token
+from core.tokens import make_user_token, encode_user_id
+from core.models import User
 
 
 CREATE_USER_URL = reverse('user:create')
+ACTIVATION_URL = reverse(
+        'user:activate', kwargs={'uid': 1, 'token': 'current-token-here'}
+)
 
 
 class SendEmailUserTests(TestCase):
@@ -29,28 +30,36 @@ class SendEmailUserTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-    def test_send_email_notsend(self):
+    def test_send_email_nosent(self):
         """test not send email"""
-        payload = {
-                'email': 'jhon@gmail.com',
-                'password': 'me123',
-                'name': 'jhon doe'
-        }
-
-        res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(len(mail.outbox), 0)
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-    def test_creating_code_confirmation(self):
+    def test_activate_account_with_token(self):
         """test creating code activation user"""
-        payload = {
-                'email': 'jhon@gmail.com',
-                'password': 'me123',
-                'name': 'jhon doe'
-        }
-        res = self.client.post(CREATE_USER_URL, payload)
-        user = get_user_model().objects.get(**res.data)
 
-        uuid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = account_activation_token.make_token(user)
+        inactive_user = User.objects.create_user(
+            password='inactivepass',
+            email='inact@test.com',
+            is_staff=True,
+            is_superuser=True,
+            is_active=True,
+        )
+        token = make_user_token(inactive_user)
+        res = self.client.put(ACTIVATION_URL, {'id': inactive_user, 'token': token})
+        self.assertTrue(User.objects.get(id=inactive_user.id).is_active)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
+    def test_activate_account_with_error_token(self):
+        """test activation with token error, and expired token"""
+        inactive_user = User.objects.create_user(
+                password='inactivepass',
+                email='inactive@test.com',
+                is_staff=True,
+                is_superuser=False,
+                is_active=True,
+        )
+        uid = 1
+        token = ''
+        res = self.client.put(f'api/user/activate/{uid}/{token}')
+        self.assertTrue(User.objects.get(id=inactive_user.id).is_active)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)

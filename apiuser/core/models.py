@@ -32,3 +32,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class CodeActivation(models.Model):
+    code_token = models.CharField(max_length=255, blank=True)
+    is_expired = models.BooleanField(default=False, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.code_token
