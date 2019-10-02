@@ -8,6 +8,7 @@ urlpatterns = [
     path('token/', views.CreateTokenView.as_view(), name='token'),
     path('me/', views.ManageUserView.as_view(), name='me'),
     re_path(
-        r'^activate/(?P<uid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        r'^activate/(?P<uid>[0-9A-Za-z_\-]+)/' +
+        '(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.ActivationAccount.as_view(), name='activate'),
 ]

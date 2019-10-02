@@ -1,7 +1,5 @@
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_text
 from rest_framework import generics, authentication,\
-        permissions, mixins, status
+        permissions, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from rest_framework.response import Response
@@ -57,7 +55,7 @@ class ActivationAccount(generics.UpdateAPIView):
                     status=status.HTTP_400_BAD_REQUEST,
             )
 
-        decode_url_id = decode_user_id(uid) 
+        decode_url_id = decode_user_id(uid)
 
         user = get_object_or_404(User, id=decode_url_id)
         user.is_active = True

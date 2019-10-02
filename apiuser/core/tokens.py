@@ -10,9 +10,8 @@ class TokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         """creating a value to current user"""
         now = datetime.datetime.now().minute
-        hashed_string = six.text_type(user.pk) \
-                + six.text_type(now) \
-                + six.text_type(user.is_active)
+        user_now = six.text_type(user.pk) + six.text_type(now)
+        hashed_string = user_now + six.text_type(user.is_active)
         return hashed_string
 
     def make_token(self, user):
