@@ -1,10 +1,14 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+from django.core.validators import EmailValidator
+from rest_framework import serializers, fields
+from rest_framework.generics import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from apiuser.celery import send_email_message
-from core.tokens import encode_user_id, make_user_token
-from core.models import CodeActivation
+from core.tokens import encode_user_id, make_user_token,\
+        decode_user_id
+from core.models import CodeActivation, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,3 +82,73 @@ class AuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class ActivationAccountSerializer(serializers.Serializer):
+    """serializer for the activation account user"""
+    pass
+
+
+class PasswordRecoverySerializer(serializers.Serializer):
+    """serializer to recovery password"""
+    email = fields.EmailField(validators=[EmailValidator(),])
+
+    def create(self, validated_data):
+        """send email to recovery password"""
+        user = get_object_or_404(User, email=validated_data.get('email'))
+        email_context = {
+                'name': '{}'.format(user.name),
+                'domain': f'{settings.URL_PRODUCTION}/recover-password',
+                'uid': encode_user_id(user.id),
+                'token': make_user_token(user),
+        }
+        send_email_message(
+                subject='Cotizate - Password Recovery',
+                to=[validated_data['email'], ],
+                body='',
+                template_name='emails/profile/recovery-password.html',
+                context=email_context,
+        )
+        return validated_data
+
+
+class PasswordRecoveryConfirmSerializer(serializers.Serializer):
+    password = fields.CharField(style={'input-type': 'password'})
+    password_confirmation = fields.CharField(style={'input-type': 'password'})
+    uid = fields.CharField(required=True)
+
+    def update(self, validated_data):
+        user_id = decode_user_id(validated_data['uid'])
+        instance = User.objects.get(id=user_id)
+        instance.password = make_password(
+                validated_data.get('password', instance.password),
+        )
+        instance.save()
+        return instance
+
+    def validate(self, attrs):
+        password_confirmation = attrs.get('password_confirmation', None)
+
+        if password_confirmation is not None:
+            if attrs['password'] != password_confirmation:
+                raise serializers.ValidationError(
+                        'Password did not match',
+                )
+            return attrs
+        raise serializers.ValidationError(
+                'password confirmation must be filled',
+        )
+
+    def validate_uid(self, attr):
+        if attr.isdigit():
+            raise serializers.ValidationError(
+                    'id not valid',
+            )
+        user_id = decode_user_id(attr)
+        try:
+            User.objects.get(id=user_id)
+            return attr
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                    '404',
+            )
