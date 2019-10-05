@@ -111,44 +111,7 @@ class PasswordRecoverySerializer(serializers.Serializer):
         )
         return validated_data
 
-
-class PasswordRecoveryConfirmSerializer(serializers.Serializer):
-    password = fields.CharField(style={'input-type': 'password'})
-    password_confirmation = fields.CharField(style={'input-type': 'password'})
-    uid = fields.CharField(required=True)
-
-    def update(self, validated_data):
-        user_id = decode_user_id(validated_data['uid'])
-        instance = User.objects.get(id=user_id)
-        instance.password = make_password(
-                validated_data.get('password', instance.password),
-        )
-        instance.save()
-        return instance
-
-    def validate(self, attrs):
-        password_confirmation = attrs.get('password_confirmation', None)
-
-        if password_confirmation is not None:
-            if attrs['password'] != password_confirmation:
-                raise serializers.ValidationError(
-                        'Password did not match',
-                )
-            return attrs
-        raise serializers.ValidationError(
-                'password confirmation must be filled',
-        )
-
-    def validate_uid(self, attr):
-        if attr.isdigit():
-            raise serializers.ValidationError(
-                    'id not valid',
-            )
-        user_id = decode_user_id(attr)
-        try:
-            User.objects.get(id=user_id)
-            return attr
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                    '404',
-            )
+    def update(self, instance, validated_data):
+        """update a user, setting the password correctly and return it"""
+        print('in here')
+        return True

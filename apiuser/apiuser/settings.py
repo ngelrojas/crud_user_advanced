@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+X_FRAME_OPTIONS = 'Deny'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -25,7 +25,7 @@ SECRET_KEY = 'eln()fnf+=%rzvk5#ossqurm$9^*b_u_b3ho)9@u3oyzi6)i@o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'corsheaders',
     'core',
     'user',
 ]
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,3 +145,22 @@ AUTH_USER_MODEL = 'core.User'
 
 # URL_PRODUCTION = 'http://www.cotizate.com'
 URL_PRODUCTION = 'http://127.0.0.1:8000'
+
+# CORS AND STUFF
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8000"
+]
+
+CSRF_COOKIE_NAME = 'csrftoken'
+
+CSRF_TRUSTED_ORIGINS = (
+    'http://127.0.0.1:8000',
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-xsrf-token',
+    'HTTP_X_XSRF_TOKEN',
+    'X-ACCESS_TOKEN',
+)

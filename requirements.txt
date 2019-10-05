@@ -7,3 +7,4 @@ celery
 django-smtp-ssl
 amqp
 django-rest-swagger
+django-cors-headers
