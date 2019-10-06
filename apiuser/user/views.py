@@ -75,4 +75,9 @@ class PasswordRecovery(generics.CreateAPIView, generics.UpdateAPIView):
     """create and confirm password recovery"""
     serializer_class = PasswordRecoverySerializer
     render_classes = api_settings.DEFAULT_RENDERER_CLASSES
-    queryset = ''
+    # queryset = ''
+
+    def put(self, request, *arg):
+        data = request.data.get('uid')
+        serializer = PasswordRecoverySerializer(data=data, partial=True)
+        return Response({'success': 'password recovery successfuly'})

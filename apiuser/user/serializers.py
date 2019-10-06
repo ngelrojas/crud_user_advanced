@@ -113,5 +113,8 @@ class PasswordRecoverySerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         """update a user, setting the password correctly and return it"""
-        print('in here')
-        return True
+        user_id_uid = validated_data.get('uid')
+        password_update = validated_data.get('password')
+        print('here in serializer')
+
+        return password_update
