@@ -20,7 +20,7 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='COTIZATE API')
 
 urlpatterns = [
-    path('api/cotizate-doc/', schema_view),
+    path('api/v1/cotizate-doc/', schema_view),
     path('admin/', admin.site.urls),
-    path('api/user/', include('user.urls')),
+    path('api/v1/user/', include('user.urls')),
 ]

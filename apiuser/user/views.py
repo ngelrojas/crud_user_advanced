@@ -7,6 +7,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.decorators import action
 from user.serializers import UserSerializer, AuthTokenSerializer, ActivationAccountSerializer
 from user.serializers import PasswordRecoverySerializer
+from user.serializers import PasswordRecoveryConfirmSerializer
 from core.models import CodeActivation, User
 from core.tokens import decode_user_id
 
@@ -71,13 +72,23 @@ class ActivationAccount(generics.UpdateAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class PasswordRecovery(generics.CreateAPIView, generics.UpdateAPIView):
+class PasswordRecovery(generics.CreateAPIView):
     """create and confirm password recovery"""
     serializer_class = PasswordRecoverySerializer
     render_classes = api_settings.DEFAULT_RENDERER_CLASSES
-    # queryset = ''
 
-    def put(self, request, *arg):
-        data = request.data.get('uid')
-        serializer = PasswordRecoverySerializer(data=data, partial=True)
-        return Response({'success': 'password recovery successfuly'})
+
+class PasswordRecoveryConfirm(generics.UpdateAPIView):
+    serializer_class = PasswordRecoveryConfirmSerializer
+    queryset = ''
+
+    def put(self, request, *args):
+        """recovery password done"""
+        serializer = PasswordRecoveryConfirmSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            user_id_uid = decode_user_id(request.data.get('uid'))
+            current_user = get_object_or_404(User, id=user_id_uid)
+            current_user.set_password(request.data.get('password'))
+            current_user.save()
+            return Response({'successfuly': 'Password recovery successfuly'})
+        return Response({'error': serializer.errors})

@@ -111,10 +111,20 @@ class PasswordRecoverySerializer(serializers.Serializer):
         )
         return validated_data
 
-    def update(self, instance, validated_data):
-        """update a user, setting the password correctly and return it"""
-        user_id_uid = validated_data.get('uid')
-        password_update = validated_data.get('password')
-        print('here in serializer')
 
-        return password_update
+class PasswordRecoveryConfirmSerializer(serializers.Serializer):
+
+    password = fields.CharField(
+        style={'input_type': 'password'}, required=True,
+    )
+    password_confirmation = fields.CharField(
+        style={'input_type': 'password'}, required=True,
+    )
+
+
+    def validate(self, attrs):
+        """validation data password and password confirm"""
+        if attrs.get('password') != attrs.get('password_confirmation'):
+            raise serializers.ValidationError("Those passwords don't match")
+
+        return attrs

@@ -14,4 +14,7 @@ urlpatterns = [
     path('recovery-password/',
         views.PasswordRecovery.as_view(),
         name='recovery-password'),
+    path('recovery-password-confirm/',
+        views.PasswordRecoveryConfirm.as_view(),
+        name='recovery-password-confirm')
 ]
