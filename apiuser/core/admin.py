@@ -18,6 +18,8 @@ class UserAdmin(BaseUserAdmin):
                         'cellphone',
                         'address',
                         'photo',
+                        'type_user',
+                        'created_at',
                     )
                 }),
             (
@@ -37,3 +39,4 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.CodeActivation)
+admin.site.register(models.Biography)
