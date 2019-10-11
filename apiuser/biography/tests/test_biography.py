@@ -1,8 +1,14 @@
+from django.utils import timezone
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
+from core.models import Biography
+from biography.serializer import BiographySerializer
+
+
+BIOGRAPHY_URL = reverse('biography:update')
 
 
 class BiographyUserTests(TestCase):
@@ -11,18 +17,46 @@ class BiographyUserTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_update_data_user_success(self):
-        """test user data biography is updated, successfuly"""
-        payload = {
-                'id': 2,
-                'is_complete': True
-        }
-        self.assertTrue(payload['is_complete'])
+    def test_login_required(self):
+        """test login is required for update data user"""
+        res = self.client.get(BIOGRAPHY_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_update_data_user_error(self):
-        """test user data biography is not updated"""
-        payload = {
-                'id': 2,
-                'is_complete': False
-        }
-        self.assertFalse(payload['is_complete'])
+
+class PrivateBiographyTests(TestCase):
+    """test the authorized user biography API"""
+
+    def setUp(self):
+        self.user = get_user_model().objects.get(id=2)
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
+
+    def test_retrieve_biography(self):
+        """test retrieving tags"""
+        Biography.objects.create(user=self.user,
+                terms_cond=True,
+                updated_at=timezone.now(),
+                address_2='',
+                email_2='',
+                b_facebook='https://facebook.com/me',
+                b_twitter='',
+                b_linkedin='',
+                b_instagram='',
+                is_complete=True
+        )
+        Biography.objects.create(user=self.user,
+                terms_cond=True,
+                updated_at=timezone.now(),
+                address_2='anywhere and why',
+                email_2='me@sendonemail.com',
+                b_facebook='https://facebook.com/me',
+                b_twitter='',
+                b_linkedin='',
+                b_instagram='',
+                is_complete=True
+        )
+        res = self.client.get(BIOGRAPHY_URL)
+        biography = Biography.objects.all().order_by('-name')
+        serializer = BiographySerializer(biography, many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
