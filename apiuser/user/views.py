@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from user.serializers import UserSerializer, AuthTokenSerializer, ActivationAccountSerializer
 from user.serializers import PasswordRecoverySerializer
 from user.serializers import PasswordRecoveryConfirmSerializer
-from core.models import CodeActivation, User
+from core.models import CodeActivation, User, Biography
 from core.tokens import decode_user_id
 
 
@@ -38,6 +38,7 @@ class ActivationAccount(generics.UpdateAPIView):
     """
     update:
         update a current token to activate to current user
+        and create profile current user.
     """
     serializer_class = ActivationAccountSerializer
 
@@ -69,7 +70,13 @@ class ActivationAccount(generics.UpdateAPIView):
         token.is_expired = True
         token.save()
 
+        self.create_biography_user(user)
+
         return Response(status=status.HTTP_200_OK)
+
+    def create_biography_user(self, user):
+        """create biography(profile user)"""
+        return Biography.objects.create(user=user)
 
 
 class PasswordRecovery(generics.CreateAPIView):

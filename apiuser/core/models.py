@@ -60,7 +60,8 @@ class CodeActivation(models.Model):
 
 class Biography(models.Model):
     terms_cond = models.BooleanField(default=True)
-    updated_at = models.DateTimeField(blank=True)
+    created_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(blank=True, default=timezone.now())
     address_2 = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=100, blank=True)
     email_2 = models.CharField(max_length=255, blank=True)
