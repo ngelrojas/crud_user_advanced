@@ -13,9 +13,21 @@ from core.models import CodeActivation, User
 
 class UserSerializer(serializers.ModelSerializer):
     """serialzier for the users object"""
+    last_name = serializers.CharField(required=True, max_length=255)
+    dni = serializers.CharField(required=True, max_length=100)
+    cellphone = serializers.CharField(required=True, max_length=255)
+    address = serializers.CharField(required=True, max_length=300)
+
     class Meta:
         model = get_user_model()
-        fields = ('email', 'password', 'name')
+        fields = ('email',
+                'password',
+                'name',
+                'last_name',
+                'dni',
+                'cellphone',
+                'address',
+                'photo',)
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def create(self, validate_data):

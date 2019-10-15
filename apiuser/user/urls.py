@@ -1,5 +1,7 @@
 from django.urls import path, re_path
 from user import views
+from biography import views as view_bio
+
 
 app_name = 'user'
 
@@ -16,5 +18,9 @@ urlpatterns = [
         name='recovery-password'),
     path('recovery-password-confirm/',
         views.PasswordRecoveryConfirm.as_view(),
-        name='recovery-password-confirm')
+        name='recovery-password-confirm'),
+    path('biography/', view_bio.BiographyView.as_view({
+                                                        'get': 'retrieve',
+                                                        'put': 'update'}),
+                                                        name='biography')
 ]
