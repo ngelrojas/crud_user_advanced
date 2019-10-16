@@ -48,6 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
+    def get_full_name(self):
+        full_name = '%s %s' % (self.name, self.last_name)
+        return full_name.strip()
+
 
 class CodeActivation(models.Model):
     code_token = models.CharField(max_length=255, blank=True)
@@ -70,9 +74,64 @@ class Biography(models.Model):
     b_linkedin = models.CharField(max_length=255, blank=True)
     b_instagram = models.CharField(max_length=255, blank=True)
     is_complete = models.BooleanField(default=False)
+    is_representative = models.BooleanField(default=False)
+    personal_website = models.CharField(max_length=255, blank=True)
+    company_website = models.CharField(max_length=255, blank=True)
+    company_name = models.CharField(max_length=255, blank=True)
+    company_nit = models.CharField(max_length=255, blank=True)
+    company_city = models.CharField(max_length=255, blank=True)
+    company_phone = models.CharField(max_length=255, blank=True)
+    company_address = models.CharField(max_length=300, blank=True)
+    company_email = models.CharField(max_length=255, blank=True)
+    company_logo = models.CharField(max_length=255, blank=True)
+    company_description = models.CharField(max_length=255, blank=True)
+    company_facebook = models.CharField(max_length=255, blank=True)
+    company_twitter = models.CharField(max_length=255, blank=True)
+    company_linkedin = models.CharField(max_length=255, blank=True)
+    company_instagram = models.CharField(max_length=255, blank=True)
     user = models.OneToOneField(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
     )
+
     def __str__(self):
-        return self.user.name + '  ' + self.user.last_name
+        return self.user.get_full_name()
+
+
+class Campaing(models.Model):
+    title = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    category_id = models.IntegerField()
+    tag_id = models.IntegerField()
+    reward_id = models.IntegerField()
+    budget = models.FloatField(null=True, blank=True)
+    qty_days = models.IntegerField()
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    website = models.CharField(max_length=255, blank=True)
+    video = models.CharField(max_length=255, blank=True)
+    excerpt = models.CharField(max_length=255, blank=True)
+    description = models.TextField()
+    user = models.OneToOneField(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.title + '  ' + self.user.get_full_name()
+
+
+class TagCampaing(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CategoryCampaing(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name

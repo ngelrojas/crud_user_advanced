@@ -40,3 +40,6 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.CodeActivation)
 admin.site.register(models.Biography)
+admin.site.register(models.Campaing)
+admin.site.register(models.TagCampaing)
+admin.site.register(models.CategoryCampaing)
