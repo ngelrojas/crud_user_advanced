@@ -21,7 +21,11 @@ class SendEmailUserTests(TestCase):
         payload = {
                 'email': 'jhon@gmail.com',
                 'password': 'me123',
-                'name': 'jhon doe'
+                'name': 'jhon doe',
+                'last_name': 'Doe',
+                'dni': '12654',
+                'cellphone': '654987',
+                'address': 'hre'
         }
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(len(mail.outbox), 1)

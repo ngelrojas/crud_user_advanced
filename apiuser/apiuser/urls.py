@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/v1/cotizate-doc/', schema_view),
     path('admin/', admin.site.urls),
     path('api/v1/user/', include('user.urls')),
+    path('api/v1/', include('tag.urls')),
 ]
