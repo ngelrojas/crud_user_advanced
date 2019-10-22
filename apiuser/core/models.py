@@ -1,4 +1,4 @@
-from django.utils import timezone
+from django.utils.timezone import now
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,\
         PermissionsMixin
@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     address = models.CharField(max_length=300, default='')
     photo = models.CharField(max_length=250, blank=True)
     type_user = models.IntegerField(choices=USER_TYPE, default=1)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=now)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
@@ -64,8 +64,8 @@ class CodeActivation(models.Model):
 
 class Biography(models.Model):
     terms_cond = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=timezone.now())
-    updated_at = models.DateTimeField(blank=True, default=timezone.now())
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
     address_2 = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=100, blank=True)
     email_2 = models.CharField(max_length=255, blank=True)
@@ -114,6 +114,9 @@ class Campaing(models.Model):
     video = models.CharField(max_length=255, blank=True)
     excerpt = models.CharField(max_length=255, blank=True)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    public_at = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
@@ -135,3 +138,25 @@ class CategoryCampaing(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Reward(models.Model):
+
+    REWARD_TYPE = (
+            (1, 'donation'),
+            (2, 'contribution')
+    )
+
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
+    type_reward = models.IntegerField(choices=REWARD_TYPE, default=1)
+    delivery_data = models.DateTimeField()
+    delivery_place = models.CharField(max_length=400, blank=True)
+    description = models.CharField(max_length=800, blank=True)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(default=now)
+    user_reward = models.IntegerField(default=0, null=True, blank=True)
+    user = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.CASCADE
+    )

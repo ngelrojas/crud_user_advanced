@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True, max_length=255)
     dni = serializers.CharField(required=True, max_length=100)
     cellphone = serializers.CharField(required=True, max_length=255)
-    address = serializers.CharField(required=True, max_length=300)
+    address = serializers.CharField(max_length=300, default='')
 
     class Meta:
         model = get_user_model()
@@ -88,6 +88,7 @@ class AuthTokenSerializer(serializers.Serializer):
                 username=email,
                 password=password
         )
+
         if not user:
             msg = _('unable to authenticate with provided credentials')
             raise serializers.ValidationError(msg, code='authentication')

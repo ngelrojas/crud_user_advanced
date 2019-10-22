@@ -24,4 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/user/', include('user.urls')),
     path('api/v1/', include('tag.urls')),
+    path('api/v1/', include('category.urls')),
+    path('api/v1/', include('reward.urls')),
 ]

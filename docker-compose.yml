@@ -14,7 +14,7 @@ services:
                     python manage.py runserver 0.0.0.0:8000"
         environment:
             - DB_HOST=db
-            - DB_NAME=apiuser
+            - DB_NAME=cotizate_db
             - DB_USER=postgres
             - DB_PASS=admin2019*
         depends_on:
@@ -23,6 +23,6 @@ services:
     db:
         image: postgres:10-alpine
         environment:
-            - POSTGRES_DB=apiuser
+            - POSTGRES_DB=cotizate_db
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=admin2019*

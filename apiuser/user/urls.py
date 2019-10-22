@@ -11,7 +11,7 @@ urlpatterns = [
     path('me/', views.ManageUserView.as_view(), name='me'),
     re_path(
         r'^activate/(?P<uid>[0-9A-Za-z_\-]+)/' +
-        '(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        '(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})$',
         views.ActivationAccount.as_view(), name='activate'),
     path('recovery-password/',
         views.PasswordRecovery.as_view(),
