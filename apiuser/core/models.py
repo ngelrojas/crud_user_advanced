@@ -158,5 +158,6 @@ class Reward(models.Model):
     user_reward = models.IntegerField(default=0, null=True, blank=True)
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
-            on_delete=models.CASCADE
+            on_delete=models.CASCADE,
+            related_name="user"
     )

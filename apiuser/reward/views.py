@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from core.models import Reward
+from core.models import Reward, User
 from reward import serializers
 
 
@@ -21,7 +21,11 @@ class RewardViewSet(viewsets.GenericViewSet,
     def get_queryset(self):
         """return objects for the current authentication"""
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, pk=None):
         """create reward"""
-        serializer = self.serializer_class(data=request.data)
-        return Response({'data': 'created successfully'}, status=status.HTTP_201_CREATED)
+        print(request.user)
+        serializer = serializers.RewardSerializer(request.user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

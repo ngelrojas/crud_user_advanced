@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         """create a new user with encrypted password and return it"""
-        user_instance = get_user_model().objects.create(**validate_data)
+        user_instance = get_user_model().objects.create_user(**validate_data)
         # send email confirmation
         uid = encode_user_id(user_instance.id)
         token = make_user_token(user_instance)

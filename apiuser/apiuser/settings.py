@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'core',
     'user',
     'biography',
+    'reward',
+    'tag',
+    'category',
 ]
 
 MIDDLEWARE = [
