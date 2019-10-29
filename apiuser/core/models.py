@@ -158,6 +158,8 @@ class Reward(models.Model):
     user_reward = models.IntegerField(default=0, null=True, blank=True)
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
-            on_delete=models.CASCADE,
-            related_name="user"
+            on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return self.user.name + '  ' + self.user.last_name

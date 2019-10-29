@@ -10,8 +10,6 @@ class RewardSerializer(serializers.ModelSerializer):
     type_reward = serializers.IntegerField(default=1)
     delivery_data = serializers.DateTimeField()
     delivery_place = serializers.CharField(max_length=400)
-    user = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    user_reward = serializers.IntegerField(default=0)
 
     class Meta:
         model = Reward
@@ -28,4 +26,9 @@ class RewardSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     def create(self, validated_data):
-        return Reward.objects.create(**validated_data)
+        try:
+            current_user = self.context['request'].user
+            reward = Reward.objects.create(user=current_user, **validated_data)
+            return reward
+        except Exception as err:
+            return f'err'
