@@ -1,6 +1,6 @@
 from django.utils.timezone import now
 from rest_framework import serializers
-from core.models import Reward
+from core.models import Reward, User
 
 
 class RewardSerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class RewardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reward
         fields = (
-                'user',
+                'id',
                 'name',
                 'price',
                 'type_reward',
@@ -26,9 +26,15 @@ class RewardSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     def create(self, validated_data):
-        try:
-            current_user = self.context['request'].user
-            reward = Reward.objects.create(user=current_user, **validated_data)
-            return reward
-        except Exception as err:
-            return f'err'
+        return Reward.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """update data reward """
+        instance.name = validated_data.get('name', instance.name)
+        instance.price = validated_data.get('price', instance.price)
+        instance.type_reward = validated_data.get('type_reward', instance.type_reward)
+        instance.delivery_data = validated_data.get('delivery_data', instance.delivery_data)
+        instance.delivery_place = validated_data.get('delivery_place', instance.delivery_place)
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+        return instance

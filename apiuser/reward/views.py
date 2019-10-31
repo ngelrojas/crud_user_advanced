@@ -1,4 +1,4 @@
-from rest_framework import generics, mixins, status
+from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,32 +7,41 @@ from core.models import Reward, User
 from reward import serializers
 
 
-class RewardViewSet(generics.GenericAPIView,
-                    mixins.ListModelMixin,
-                    mixins.CreateModelMixin):
+class RewardViewSet(viewsets.ModelViewSet):
     """manage reward objects"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Reward.objects.all()
     serializer_class = serializers.RewardSerializer
 
-    queryset = Reward.objects.all()
+    def get_queryset(self):
+        queryset = Reward.objects.filter(id=self.request.data.get('id'))
+        return queryset
 
-    def get(self, request, *args, **kwargs):
-       list_reward = Reward.objects.filter(user_id=request.user.id)
-       serializer = self.serializer_class(list_reward, many=True)
-       return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    def create(self, request, *args, **kwargs):
+        """create a new reward"""
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'error': 'something wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, *args, **kwargs):
-       # reward = Reward()
-       # reward.user = request.user
-       # reward.name = request.data.get('name')
-       # reward.price = request.data.get('price')
-       # reward.type_reward = request.data.get('type_reward')
-       # reward.delivery_data = request.data.get('delivery_data')
-       # reward.delivery_place = request.data.get('delivery_place')
-       # reward.description = request.data.get('description')
-       # reward.save()
-       reward = self.serializer_class(data=request.data)
-       reward.is_valid(raise_exception=True)
-       return Response({'data': 'reward created successfully'}, status=status.HTTP_201_CREATED)
+    def update(self, request, pk=None):
+        """update reward from current user"""
+        try:
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({'data': "reward updated successufully."}, status=status.HTTP_200_OK)
+        except Reward.DoesNotExist as err:
+            return Response({'error': "something wrong in update reward"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        """delete current reward"""
+        try:
+            current_reward = Reward.objects.get(id=request.data.get('id'))
+            current_reward.delete()
+            return Response({'data': 'reward deleted successufully'}, status=status.HTTP_200_OK)
+        except Reward.DoesNotExist as err:
+            return Response({'error': 'something wrong.'}, status=status.HTTP_400_BAD_REQUEST)

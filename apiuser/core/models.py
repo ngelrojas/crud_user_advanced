@@ -101,11 +101,11 @@ class Biography(models.Model):
 class Campaing(models.Model):
     title = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    category_id = models.IntegerField()
-    tag_id = models.IntegerField()
-    reward_id = models.IntegerField()
+    category_id = models.IntegerField(default=0)
+    tag_id = models.IntegerField(default=0)
+    reward_id = models.IntegerField(default=0)
     budget = models.FloatField(null=True, blank=True)
-    qty_days = models.IntegerField()
+    qty_days = models.IntegerField(default=0)
     facebook = models.CharField(max_length=255, blank=True)
     twitter = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
@@ -113,13 +113,14 @@ class Campaing(models.Model):
     website = models.CharField(max_length=255, blank=True)
     video = models.CharField(max_length=255, blank=True)
     excerpt = models.CharField(max_length=255, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(null=True, blank=True)
     public_at = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
+            related_name='user_campaing'
     )
 
     def __str__(self):
@@ -156,10 +157,11 @@ class Reward(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(default=now)
     user_reward = models.IntegerField(default=0, null=True, blank=True)
-    user = models.ForeignKey(
-            settings.AUTH_USER_MODEL,
-            on_delete=models.CASCADE
+    campaing = models.ForeignKey(
+            Campaing,
+            on_delete=models.CASCADE,
+            related_name='campaing_reward'
     )
 
     def __str__(self):
-        return self.user.name + '  ' + self.user.last_name
+        return self.campaing.name

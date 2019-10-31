@@ -28,6 +28,6 @@ class CategoryViewSet(viewsets.GenericViewSet,
         return Response({'error': 'somthing error'}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        instance_category = CategoryCampaing.objects.get(name=request.data.get('name'))
+        instance_category = CategoryCampaing.objects.get(id=request.data.get('id'))
         instance_category.delete()
         return Response({'data': True}, status=status.HTTP_200_OK)
