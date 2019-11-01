@@ -117,14 +117,14 @@ class Campaing(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(null=True, blank=True)
     public_at = models.DateTimeField(null=True, blank=True)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
             related_name='user_campaing'
     )
 
     def __str__(self):
-        return self.title + '  ' + self.user.get_full_name()
+        return self.title + ' by  ' + self.user.get_full_name()
 
 
 class TagCampaing(models.Model):

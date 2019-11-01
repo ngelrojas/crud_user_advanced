@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'reward',
     'tag',
     'category',
+    'campaing',
 ]
 
 MIDDLEWARE = [

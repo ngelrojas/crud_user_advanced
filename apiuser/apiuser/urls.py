@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/v1/', include('tag.urls')),
     path('api/v1/', include('category.urls')),
     path('api/v1/', include('reward.urls')),
+    path('api/v1/', include('campaing.urls')),
 ]
