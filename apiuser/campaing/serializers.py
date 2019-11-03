@@ -19,7 +19,7 @@ class CampaingSerializer(serializers.ModelSerializer):
     video = serializers.CharField(max_length=255)
     excerpt = serializers.CharField(max_length=255)
     description = serializers.CharField(max_length=None)
-    updated_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField(default=now)
 
     class Meta:
         model = Campaing
@@ -40,7 +40,8 @@ class CampaingSerializer(serializers.ModelSerializer):
                 'excerpt',
                 'description',
                 'created_at',
-                'updated_at',)
+                'updated_at',
+                'is_enabled',)
 
         read_only_fields = ('id',)
 
@@ -63,6 +64,6 @@ class CampaingSerializer(serializers.ModelSerializer):
         instance.video = validated_data.get('video', instance.video)
         instance.excerpt = validated_data.get('excerpt', instance.excerpt)
         instance.description = validated_data.get('description', instance.description)
-        instance.updated_at = now
+        instance.updated_at = validated_data.get('updated_at', now)
         instance.save()
         return instance

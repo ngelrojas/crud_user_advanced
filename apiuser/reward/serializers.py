@@ -1,6 +1,6 @@
 from django.utils.timezone import now
 from rest_framework import serializers
-from core.models import Reward, User
+from core.models import Reward, User, Campaing
 
 
 class RewardSerializer(serializers.ModelSerializer):
@@ -15,6 +15,7 @@ class RewardSerializer(serializers.ModelSerializer):
         model = Reward
         fields = (
                 'id',
+                'campaing',
                 'name',
                 'price',
                 'type_reward',

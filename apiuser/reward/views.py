@@ -2,34 +2,39 @@ from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from core.models import Reward, User
+from core.models import Reward
 from reward import serializers
 
 
 class RewardViewSet(viewsets.ModelViewSet):
-    """manage reward objects"""
+    """
+    list:
+        list all rewards
+    create:
+        create a reward from related campaing
+    update:
+        update a reward
+    delete:
+        delete a reward
+    """
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Reward.objects.all()
     serializer_class = serializers.RewardSerializer
 
     def get_queryset(self):
-        queryset = Reward.objects.filter(id=self.request.data.get('id'))
+        queryset = Reward.objects.all()
         return queryset
 
-    def create(self, request, *args, **kwargs):
-        """create a new reward"""
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
-        return Response({'error': 'something wrong'}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        return serializer.save()
 
     def update(self, request, pk=None):
-        """update reward from current user"""
         try:
-            serializer = self.serializer_class(data=request.data)
+            current_rewards = Reward.objects.get(campaing=request.data.get('campaing'),
+                                                 id=request.data.get('id')
+            )
+            serializer = self.serializer_class(current_rewards, data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response({'data': "reward updated successufully."}, status=status.HTTP_200_OK)
@@ -38,8 +43,10 @@ class RewardViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """delete current reward"""
         try:
+            if not request.data.get('id'):
+                return Response({'error': 'ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
             current_reward = Reward.objects.get(id=request.data.get('id'))
             current_reward.delete()
             return Response({'data': 'reward deleted successufully'}, status=status.HTTP_200_OK)

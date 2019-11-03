@@ -6,5 +6,6 @@ urlpatterns = [
         path('campaing', views.CampaingViewSet.as_view({
                                                         'get': 'list',
                                                         'post': 'create',
-                                                        'put': 'update'}), name='campaing')
+                                                        'put': 'update',
+                                                        'delete': 'destroy'}), name='campaing')
 ]

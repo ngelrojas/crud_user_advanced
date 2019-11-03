@@ -117,6 +117,7 @@ class Campaing(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(null=True, blank=True)
     public_at = models.DateTimeField(null=True, blank=True)
+    is_enabled = models.BooleanField(default=False)
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
