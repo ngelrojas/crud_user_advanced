@@ -26,18 +26,25 @@ class CampaingViewSet(viewsets.ModelViewSet):
     queryset = Campaing.objects.all()
     serializer_class = serializers.CampaingSerializer
 
-    def get_queryset(self):
-        queryset = Campaing.objects.filter(user=self.request.user, is_enabled=True)
-        return queryset
+    def list(self, request):
+        queryset = Campaing.objects.filter(user=request.user, is_enabled=True)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk):
+        try:
+            queryset = Campaing.objects.all()
+            current_campaing = get_object_or_404(queryset, pk=pk)
+            serializer = self.serializer_class(current_campaing)
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+        except Campaing.DoesNotExist as err:
+            return Response(
+                    {'error': 'something wrong.'},
+                    status=status.HTTP_400_BAD_REQUEST
+            )
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
-
-    def retrieve(self, request, pk=None):
-        queryset = Campaing.objects.all()
-        current_campaing = get_object_or_404(queryset, pk=request.data.get('id'))
-        serializer = self.serializer_class(current_campaing)
-        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
         try:
