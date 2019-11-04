@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +11,8 @@ class CampaingViewSet(viewsets.ModelViewSet):
     """
     list:
         get all campaing from current user
+    retrieve:
+        get a detail campaing from current user
     create:
         create campaing from current user
     update:
@@ -30,13 +33,19 @@ class CampaingViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
 
+    def retrieve(self, request, pk=None):
+        queryset = Campaing.objects.all()
+        current_campaing = get_object_or_404(queryset, pk=request.data.get('id'))
+        serializer = self.serializer_class(current_campaing)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
     def update(self, request, pk=None):
         try:
             current_user = Campaing.objects.get(user=request.user,
                                                 id=request.data.get('id'),
                                                 is_enabled=True
             )
-            serializer = self.serializer_class(current_user, data=request.data)
+            serializer = self.serializer_class(current_user, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save(user=request.user)
                 return Response({'data': 'campaing updated successufully.'}, status=status.HTTP_200_OK)
@@ -51,3 +60,15 @@ class CampaingViewSet(viewsets.ModelViewSet):
             return Response({'data': 'campaing deleted successfully.'}, status=status.HTTP_200_OK)
         except Campaing.DoesNotExist as err:
             return Response({'error': 'something wrong.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CampaingPublic(viewsets.ModelViewSet):
+    """
+    list:
+        show all campaing
+    """
+    serializer_class = serializers.CampaingSerializerPublic
+
+    def get_queryset(self):
+        queryset = Campaing.objects.filter(is_enabled=True)
+        return queryset

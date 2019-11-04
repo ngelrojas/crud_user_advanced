@@ -98,12 +98,16 @@ class Biography(models.Model):
         return self.user.get_full_name()
 
 
+class TagCampaing(models.Model):
+    name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Campaing(models.Model):
     title = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    category_id = models.IntegerField(default=0)
-    tag_id = models.IntegerField(default=0)
-    reward_id = models.IntegerField(default=0)
     budget = models.FloatField(null=True, blank=True)
     qty_days = models.IntegerField(default=0)
     facebook = models.CharField(max_length=255, blank=True)
@@ -117,26 +121,23 @@ class Campaing(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(null=True, blank=True)
     public_at = models.DateTimeField(null=True, blank=True)
+    add_date = models.DateTimeField(null=True, blank=True)
     is_enabled = models.BooleanField(default=False)
+    is_compolete = models.BooleanField(default=False)
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
             related_name='user_campaing'
     )
+    tags = models.ManyToManyField(TagCampaing)
 
     def __str__(self):
         return self.title + ' by  ' + self.user.get_full_name()
 
 
-class TagCampaing(models.Model):
-    name = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class CategoryCampaing(models.Model):
     name = models.CharField(max_length=255, blank=True)
+    campaing = models.ManyToManyField(Campaing)
 
     def __str__(self):
         return self.name
