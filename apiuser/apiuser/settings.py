@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'tag',
     'category',
     'campaing',
+    'payment',
+    'like',
 ]
 
 MIDDLEWARE = [
