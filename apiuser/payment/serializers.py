@@ -12,10 +12,25 @@ class PaymentSerializer(serializers.ModelSerializer):
                 'id',
                 'name',
                 'campaing',
-                'user',
                 'type_payment',
+                'status_payment',
                 'budget_partial',
                 'created_at',
+                'updated_at',
         )
         read_only_fields = ('id',)
 
+
+class PayIncomeSerializer(serializers.ModelSerializer):
+    """payment income serialzier"""
+
+    class Meta:
+        model = Payment
+        fields = (
+                'id',
+                'name',
+                'campaing',
+                'type_payment',
+                'status_payment',
+                'budget_partial',
+        )

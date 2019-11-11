@@ -175,21 +175,31 @@ class Payment(models.Model):
             (2, 'credit'),
             (3, 'cash')
     )
+    STATUS_PAYMENT = (
+            (1, 'init'),
+            (2, 'pending'),
+            (3, 'finish'),
+            (4, 'devolution')
+    )
 
     name = models.CharField(max_length=255)
     campaing = models.ForeignKey(Campaing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type_payment = models.IntegerField(choices=TYPE_PAYMENT, default=1)
+    status_payment = models.IntegerField(choices=STATUS_PAYMENT, default=1)
+    code_payment = models.CharField(max_length=255, default='0')
     budget_partial = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
     created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(default=now)
 
     def __str__(self):
-        return self.user.name +'  '+self.user.last_name +'  '+self.type_payment
+        return 'USER: '+self.user.name +'  '+self.user.last_name +' | TYPE PAYMENT: '+str(self.type_payment)
 
 
 class Like(models.Model):
     qty_like = models.IntegerField(default=0)
+    from_user = models.IntegerField(default=0)
     campaing = models.ForeignKey(Campaing, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.campaing.name +'  '+ self.qty_like
+        return 'TITLE CAMPAING:  '+self.campaing.name +' TOTAL LIKES: '+ str(self.qty_like)
