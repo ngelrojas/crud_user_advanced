@@ -30,8 +30,44 @@ class LikeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    def perform_create(self, serializer):
-        return serializer.save()
+    def create(self, request):
+        try:
+            current_like = Like.objects.get(campaing=request.data.get('campaing'))
+            if current_like:
+                serializer = self.serializer_class(current_like, data=request.data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+                    return Response(
+                            {'data': 'like exists'},
+                            status=status.HTTP_200_OK
+                    )
+
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(
+                        {'data': 'like created'},
+                        status=status.HTTP_201_CREATED
+                )
+
+        except Like.DoesNotExist as err:
+            return Response(
+                    {'error': 'something wrong.'},
+                    status=status.HTTP_404_NOT_FOUND
+            )
 
     def update(self, request, pk=None):
-        pass
+        try:
+            current_like = Like.objects.get(id=request.data.get('id'))
+            serializer = self.serializer_class(current_like, data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(
+                        {'data': 'likes updated'},
+                        status=status.HTTP_200_OK
+                )
+        except Like.DoesNotExist as err:
+            return Response(
+                    {'error': 'something wrong.'},
+                    status=status.HTTP_404_NOT_FOUND
+            )
