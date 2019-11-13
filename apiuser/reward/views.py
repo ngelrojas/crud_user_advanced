@@ -31,9 +31,7 @@ class RewardViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         try:
-            current_rewards = Reward.objects.get(campaing=request.data.get('campaing'),
-                                                 id=request.data.get('id')
-            )
+            current_rewards = Reward.objects.get(campaing=request.data.get('campaing'))
             serializer = self.serializer_class(current_rewards, data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()

@@ -12,6 +12,7 @@ class PaymentSerializer(serializers.ModelSerializer):
                 'id',
                 'name',
                 'campaing',
+                'reward',
                 'type_payment',
                 'status_payment',
                 'budget_partial',

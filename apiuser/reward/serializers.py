@@ -22,12 +22,11 @@ class RewardSerializer(serializers.ModelSerializer):
                 'delivery_data',
                 'delivery_place',
                 'description',
-                'user_reward',
         )
         read_only_fields = ('id',)
 
-    def create(self, validated_data):
-        return Reward.objects.create(**validated_data)
+    # def create(self, validated_data):
+        # return Reward.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         """update data reward """

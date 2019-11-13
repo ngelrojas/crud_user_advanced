@@ -9,8 +9,8 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = (
                 'id',
-                'qty_like',
-                'from_user',
+                'liked',
+                'user',
                 'campaing',
         )
     read_only_fields = ('id',)

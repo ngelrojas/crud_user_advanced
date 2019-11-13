@@ -16,6 +16,9 @@ class LikeViewSet(viewsets.ModelViewSet):
     update:
         updated likes
     """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Like.objects.all()
     serializer_class = serializers.LikeSerializer
 
     def get_queryset(self):
@@ -23,38 +26,15 @@ class LikeViewSet(viewsets.ModelViewSet):
         return queryset
 
     def retrieve(self, request, pk):
-        queryset = Like.objects.get(campaing=pk)
+        queryset = Like.objects.get(campaing=pk, liked=True)
         serializer = self.serializer_class(queryset)
         return Response({
             'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
-    def create(self, request):
-        try:
-            current_like = Like.objects.get(campaing=request.data.get('campaing'))
-            if current_like:
-                serializer = self.serializer_class(current_like, data=request.data)
-                if serializer.is_valid(raise_exception=True):
-                    serializer.save()
-                    return Response(
-                            {'data': 'like exists'},
-                            status=status.HTTP_200_OK
-                    )
-
-            serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(
-                        {'data': 'like created'},
-                        status=status.HTTP_201_CREATED
-                )
-
-        except Like.DoesNotExist as err:
-            return Response(
-                    {'error': 'something wrong.'},
-                    status=status.HTTP_404_NOT_FOUND
-            )
+        def perform_create(self, serializer):
+            return serializer.save(owner=self.request.user)
 
     def update(self, request, pk=None):
         try:

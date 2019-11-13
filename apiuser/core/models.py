@@ -123,7 +123,7 @@ class Campaing(models.Model):
     public_at = models.DateTimeField(null=True, blank=True)
     add_date = models.DateTimeField(null=True, blank=True)
     is_enabled = models.BooleanField(default=False)
-    is_compolete = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=False)
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
             on_delete=models.CASCADE,
@@ -152,13 +152,12 @@ class Reward(models.Model):
 
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
-    type_reward = models.IntegerField(choices=REWARD_TYPE, default=1)
+    type_reward = models.IntegerField(choices=REWARD_TYPE, default=0)
     delivery_data = models.DateTimeField()
     delivery_place = models.CharField(max_length=400, blank=True)
     description = models.CharField(max_length=800, blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(default=now)
-    user_reward = models.IntegerField(default=0, null=True, blank=True)
     campaing = models.ForeignKey(
             Campaing,
             on_delete=models.CASCADE,
@@ -184,6 +183,7 @@ class Payment(models.Model):
 
     name = models.CharField(max_length=255)
     campaing = models.ForeignKey(Campaing, on_delete=models.CASCADE)
+    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type_payment = models.IntegerField(choices=TYPE_PAYMENT, default=1)
     status_payment = models.IntegerField(choices=STATUS_PAYMENT, default=1)
@@ -197,9 +197,12 @@ class Payment(models.Model):
 
 
 class Like(models.Model):
-    qty_like = models.IntegerField(default=0)
-    from_user = models.IntegerField(default=0)
+    liked = models.BooleanField(default=False)
+    user = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.CASCADE
+    )
     campaing = models.ForeignKey(Campaing, on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'TITLE CAMPAING:  '+self.campaing.name +' TOTAL LIKES: '+ str(self.qty_like)
+        return 'TITLE CAMPAING:  '+self.campaing.name
