@@ -1,12 +1,12 @@
 from django.utils.timezone import now
 from rest_framework import serializers
 from core.models import Campaing, User, TagCampaing
-from tag.serializers import TagCampaingSerializer
 
 
 class CampaingSerializer(serializers.ModelSerializer):
     """serializer for campaing"""
     title = serializers.CharField(max_length=255)
+    slug = serializers.CharField(max_length=255)
     city = serializers.CharField(max_length=255)
     budget = serializers.FloatField(max_value=None, min_value=None)
     qty_days = serializers.IntegerField(default=0)
@@ -29,6 +29,7 @@ class CampaingSerializer(serializers.ModelSerializer):
         fields = (
                 'id',
                 'title',
+                'slug',
                 'city',
                 'budget',
                 'qty_days',
@@ -49,13 +50,23 @@ class CampaingSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
+class TagPublicSerializer(serializers.ModelSerializer):
+    """serilizer public tags"""
+
+    class Meta:
+        model = TagCampaing
+        fields = ('id', 'name',)
+
+
 class CampaingSerializerPublic(serializers.ModelSerializer):
     """campaing serializer public"""
+    tags = TagPublicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Campaing
         fields = (
                 'title',
+                'slug',
                 'city',
                 'budget',
                 'qty_days',
@@ -68,6 +79,6 @@ class CampaingSerializerPublic(serializers.ModelSerializer):
                 'excerpt',
                 'description',
                 'tags',
-                )
+        )
 
         read_only_fields = ('id',)

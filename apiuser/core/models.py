@@ -1,8 +1,9 @@
 from django.utils.timezone import now
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,\
-        PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.conf import settings
+from autoslug import AutoSlugField
 
 
 class UserManager(BaseUserManager):
@@ -106,7 +107,15 @@ class TagCampaing(models.Model):
 
 
 class Campaing(models.Model):
+    STATUS_CAMPAING = (
+            (0, 'begin'),
+            (1, 'created'),
+            (2, 'revision'),
+            (3, 'public'),
+            (4, 'completed')
+    )
     title = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from='title')
     city = models.CharField(max_length=255)
     budget = models.FloatField(null=True, blank=True)
     qty_days = models.IntegerField(default=0)
@@ -121,7 +130,9 @@ class Campaing(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(null=True, blank=True)
     public_at = models.DateTimeField(null=True, blank=True)
+    campaing_end_at = models.DateTimeField(null=True, blank=True)
     add_date = models.DateTimeField(null=True, blank=True)
+    status_campaing = models.IntegerField(choices=STATUS_CAMPAING, default=0)
     is_enabled = models.BooleanField(default=False)
     is_complete = models.BooleanField(default=False)
     user = models.ForeignKey(
@@ -137,7 +148,11 @@ class Campaing(models.Model):
 
 class CategoryCampaing(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    campaing = models.ManyToManyField(Campaing)
+    campaing = models.ManyToManyField(
+            Campaing,
+            related_name='category_campaing',
+            blank=True
+    )
 
     def __str__(self):
         return self.name

@@ -3,7 +3,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from core.models import CategoryCampaing
+from core.models import CategoryCampaing, Campaing
 from category import serializers
 
 
@@ -58,3 +58,23 @@ class CategoryViewSet(viewsets.GenericViewSet,
         instance_category = CategoryCampaing.objects.get(id=request.data.get('id'))
         instance_category.delete()
         return Response({'data': True}, status=status.HTTP_200_OK)
+
+
+class CategoryPublic(viewsets.GenericViewSet,
+                    mixins.ListModelMixin):
+    """
+    list:
+        display all categories
+    retrieve:
+        display detail category
+    """
+    serializer_class = serializers.CategoryPublicSerializer
+    queryset = CategoryCampaing.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.order_by('-name')
+
+    def retrieve(self, request, name):
+        current_cc = get_object_or_404(self.queryset, name=name)
+        serializer = self.serializer_class(current_cc)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)

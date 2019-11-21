@@ -9,3 +9,5 @@ amqp==2.5.1
 django-rest-swagger
 django-cors-headers
 kombu==4.6.5
+django-model-utils
+django-autoslug

@@ -17,4 +17,11 @@ urlpatterns = [
             'get': 'retrieve'}),
             name='detail-category'
         ),
+        path('category-list', views.CategoryPublic.as_view({
+            'get': 'list'}),
+            name='list-categories'),
+        path('category/<slug:name>', views.CategoryPublic.as_view({
+            'get': 'retrieve'}),
+            name='category-campaing'
+        )
 ]

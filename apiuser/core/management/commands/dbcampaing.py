@@ -63,7 +63,7 @@ class Command(BaseCommand):
                    description='this is a lot description for this campaing',
                    public_at='2020-12-03 12:52:00',
                    is_enabled=True,
-                   is_complete=True,
+                   is_complete=False,
                    user=user_creator_1
             )
             campaing_1.tags.add(tag_1, tag_3)
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                    description='this is a lot description for this campaing',
                    public_at='2020-10-05 12:52:00',
                    is_enabled=True,
-                   is_complete=True,
+                   is_complete=False,
                    user=user_creator_2
             )
             campaing_2.tags.add(tag_2, tag_1)
