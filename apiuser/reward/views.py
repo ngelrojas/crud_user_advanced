@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -23,7 +24,9 @@ class RewardViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RewardSerializer
 
     def get_queryset(self):
-        queryset = Reward.objects.all()
+        queryset = Reward.objects.filter(
+                campaing=self.kwargs['pk']
+        )
         return queryset
 
     def perform_create(self, serializer):
@@ -31,22 +34,55 @@ class RewardViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         try:
-            current_rewards = Reward.objects.get(campaing=request.data.get('campaing'))
-            serializer = self.serializer_class(current_rewards, data=request.data)
+            current_rewards = Reward.objects.get(
+                    campaing=request.data.get('campaing')
+            )
+            serializer = self.serializer_class(
+                    current_rewards,
+                    data=request.data
+            )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return Response({'data': "reward updated successufully."}, status=status.HTTP_200_OK)
+                return Response(
+                        {'data': "reward updated successufully."},
+                        status=status.HTTP_200_OK
+                )
         except Reward.DoesNotExist as err:
-            return Response({'error': "something wrong in update reward"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                    {'error': "something wrong in update reward"},
+                    status=status.HTTP_400_BAD_REQUEST
+            )
 
     def destroy(self, request, pk=None):
         try:
             if not request.data.get('id'):
-                return Response({'error': 'ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                        {'error': 'ID is required.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                )
 
             current_reward = Reward.objects.get(id=request.data.get('id'))
             current_reward.delete()
-            return Response({'data': 'reward deleted successufully'}, status=status.HTTP_200_OK)
+            return Response(
+                    {'data': 'reward deleted successufully'},
+                    status=status.HTTP_200_OK
+            )
         except Reward.DoesNotExist as err:
-            return Response({'error': 'something wrong.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                    {'error': 'something wrong.'},
+                    status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class RewardPublic(viewsets.ModelViewSet):
+    """
+    list:
+        display all rewards public
+    """
+    serializer_class = serializers.RewardSerializer
+
+    def get_queryset(self):
+        queryset = Reward.objects.filter(
+                campaing=self.kwargs['pk']
+        )
+        return queryset

@@ -5,7 +5,7 @@ from core.models import Reward, User, Campaing
 
 class RewardSerializer(serializers.ModelSerializer):
     """serializer for rewards object"""
-    name = serializers.CharField(max_length=255)
+    title = serializers.CharField(max_length=255)
     price = serializers.DecimalField(max_digits=9, decimal_places=2, default=0.00)
     type_reward = serializers.IntegerField(default=1)
     delivery_data = serializers.DateTimeField()
@@ -15,8 +15,8 @@ class RewardSerializer(serializers.ModelSerializer):
         model = Reward
         fields = (
                 'id',
+                'title',
                 'campaing',
-                'name',
                 'price',
                 'type_reward',
                 'delivery_data',
@@ -25,12 +25,9 @@ class RewardSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id',)
 
-    # def create(self, validated_data):
-        # return Reward.objects.create(**validated_data)
-
     def update(self, instance, validated_data):
         """update data reward """
-        instance.name = validated_data.get('name', instance.name)
+        instance.name = validated_data.get('title', instance.title)
         instance.price = validated_data.get('price', instance.price)
         instance.type_reward = validated_data.get('type_reward', instance.type_reward)
         instance.delivery_data = validated_data.get('delivery_data', instance.delivery_data)

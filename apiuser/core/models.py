@@ -115,7 +115,7 @@ class Campaing(models.Model):
             (4, 'completed')
     )
     title = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='title')
+    slug = AutoSlugField(populate_from='title', always_update=True)
     city = models.CharField(max_length=255)
     budget = models.FloatField(null=True, blank=True)
     qty_days = models.IntegerField(default=0)
@@ -132,7 +132,7 @@ class Campaing(models.Model):
     public_at = models.DateTimeField(null=True, blank=True)
     campaing_end_at = models.DateTimeField(null=True, blank=True)
     add_date = models.DateTimeField(null=True, blank=True)
-    status_campaing = models.IntegerField(choices=STATUS_CAMPAING, default=0)
+    status_campaing = models.IntegerField(choices=STATUS_CAMPAING, default=1)
     is_enabled = models.BooleanField(default=False)
     is_complete = models.BooleanField(default=False)
     user = models.ForeignKey(
@@ -165,7 +165,7 @@ class Reward(models.Model):
             (2, 'contribution')
     )
 
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
     type_reward = models.IntegerField(choices=REWARD_TYPE, default=0)
     delivery_data = models.DateTimeField()
@@ -180,7 +180,7 @@ class Reward(models.Model):
     )
 
     def __str__(self):
-        return self.campaing.name
+        return self.campaing.title
 
 
 class Payment(models.Model):

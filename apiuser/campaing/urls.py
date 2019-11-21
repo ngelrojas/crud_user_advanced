@@ -18,4 +18,8 @@ urlpatterns = [
             'get': 'list'}),
             name='campaings'
         ),
+        path('campaings/<slug:slug_title>', views.CampaingPublic.as_view({
+            'get': 'retrieve'}),
+            name='detail-campaings'
+        ),
 ]

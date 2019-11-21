@@ -50,6 +50,7 @@ class Command(BaseCommand):
             """create campaing"""
             campaing_1 = Campaing.objects.create(
                    title='first campaing',
+                   slug='first-campaing',
                    city='santa cruz',
                    budget=100,
                    qty_days=50,
@@ -62,13 +63,14 @@ class Command(BaseCommand):
                    excerpt='this is a excerpt for this campaibng.',
                    description='this is a lot description for this campaing',
                    public_at='2020-12-03 12:52:00',
-                   is_enabled=True,
+                   status_campaing=1,
                    is_complete=False,
                    user=user_creator_1
             )
             campaing_1.tags.add(tag_1, tag_3)
             campaing_2 = Campaing.objects.create(
                    title='second campaing',
+                   slug='second-campaing',
                    city='la paz',
                    budget=300,
                    qty_days=50,
@@ -81,7 +83,7 @@ class Command(BaseCommand):
                    excerpt='this is a excerpt for this campaibng.',
                    description='this is a lot description for this campaing',
                    public_at='2020-10-05 12:52:00',
-                   is_enabled=True,
+                   status_campaing=1,
                    is_complete=False,
                    user=user_creator_2
             )
@@ -120,7 +122,7 @@ class Command(BaseCommand):
 
             """create rewards"""
             reward_one = Reward.objects.create(
-                    name='reward camp 1',
+                    title='reward camp 1',
                     price=12.50,
                     delivery_data='2020-02-20 12:45',
                     delivery_place='somewhere',
@@ -128,7 +130,7 @@ class Command(BaseCommand):
                     campaing=campaing_1
             )
             reward_two = Reward.objects.create(
-                    name='reward camp 1',
+                    title='reward camp 1',
                     price=123.50,
                     delivery_data='2020-05-20 12:45',
                     delivery_place='somewhere',
@@ -136,7 +138,7 @@ class Command(BaseCommand):
                     campaing=campaing_1
             )
             reward_three = Reward.objects.create(
-                    name='reward camp 2',
+                    title='reward camp 2',
                     price=912.50,
                     delivery_data='2020-06-22 12:45',
                     delivery_place='somewhere',
@@ -145,7 +147,7 @@ class Command(BaseCommand):
             )
 
             reward_four = Reward.objects.create(
-                    name='reward camp 2',
+                    title='reward camp 2',
                     price=668.50,
                     delivery_data='2020-07-21 12:45',
                     delivery_place='somewhere',
