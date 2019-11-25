@@ -14,4 +14,12 @@ urlpatterns = [
             'get': 'retrieve'}),
             name='detail-tag'
         ),
+        path('tags', views.TagPublic.as_view({
+            'get': 'list'}),
+            name='tags'
+        ),
+        path('tags/<int:pk>', views.TagPublic.as_view({
+            'get': 'retrieve'}),
+            name='retrieve-tags'
+        ),
 ]

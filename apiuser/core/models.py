@@ -221,3 +221,12 @@ class Like(models.Model):
 
     def __str__(self):
         return 'TITLE CAMPAING:  '+self.campaing.name
+
+
+class News(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    campaing = models.ForeignKey(Campaing, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title

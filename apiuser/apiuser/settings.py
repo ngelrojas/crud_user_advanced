@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'campaing',
     'payment',
     'like',
+    'newscampaing',
 ]
 
 MIDDLEWARE = [
