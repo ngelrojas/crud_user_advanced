@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/v1/', include('payment.urls')),
     path('api/v1/', include('like.urls')),
     path('api/v1/', include('newscampaing.urls')),
+    path('api/v1/', include('comment.urls')),
 ]

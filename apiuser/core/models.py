@@ -230,3 +230,38 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    STATUS_COMMENT = (
+            (1, 'pending'),
+            (2, 'approved'),
+            (3, 'deleted')
+    )
+    description = models.CharField(max_length=255, blank=True, null=True)
+    status = models.IntegerField(choices=STATUS_COMMENT, default=1)
+    created_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.user.name + '  '+ self.user.last_name
+
+
+class SubComment(models.Model):
+    STATUS_COMMENT = (
+            (1, 'pending'),
+            (2, 'approved'),
+            (3, 'deleted')
+    )
+    description = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now=True)
+    status = models.IntegerField(choices=STATUS_COMMENT, default=1)
+    comment = models.ForeignKey(
+            Comment,
+            on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return "comment ID: " + str(self.comment.id) + " | by user: " + self.comment.user.name

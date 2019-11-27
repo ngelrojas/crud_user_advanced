@@ -2,8 +2,9 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from core.models import CategoryCampaing, TagCampaing
-from core.models import Campaing, Like
+from core.models import Campaing, Like, News
 from core.models import Reward, Payment, User
+from core.models import Comment, SubComment
 
 
 class Command(BaseCommand):
@@ -185,3 +186,48 @@ class Command(BaseCommand):
                    budget_partial=reward_three.price
             )
             self.success('payment created.')
+            """news related a campaing"""
+            news_1 = News.objects.create(
+                    title="some title",
+                    description="some description about campaing.",
+                    campaing=campaing_1
+            )
+            news_2= News.objects.create(
+                    title="some title two",
+                    description="some two description about campaing.",
+                    campaing=campaing_1
+            )
+            news_3= News.objects.create(
+                    title="some title three",
+                    description="some three description about campaing.",
+                    campaing=campaing_1
+            )
+            self.success('news created.')
+            """comment about campaing"""
+            comment_1 = Comment.objects.create(
+                    description="some comments about campaing.",
+                    created_at="2019-10-5 12:15",
+                    user=user_contributor_1
+            )
+            comment_2 = Comment.objects.create(
+                    description="some two comments about campaing.",
+                    created_at="2019-10-5 12:15",
+                    user=user_contributor_1
+            )
+            self.success('comments created.')
+            """subcomment about comment"""
+            sub_comment_1_1 = SubComment.objects.create(
+                    description="some answer about comment.",
+                    created_at="2019-5-5 12:23",
+                    comment=comment_1
+            )
+            sub_comment_1_2 = SubComment.objects.create(
+                    description="some two answer about comment.",
+                    created_at="2019-5-5 12:23",
+                    comment=comment_1
+            )
+            sub_comment_2_1 = SubComment.objects.create(
+                    description="some answer about comment above.",
+                    created_at="2019-6-5 12:12",
+                    comment=comment_2
+            )
