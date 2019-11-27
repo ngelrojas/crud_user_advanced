@@ -4,7 +4,7 @@ from django.db import transaction
 from core.models import CategoryCampaing, TagCampaing
 from core.models import Campaing, Like, News
 from core.models import Reward, Payment, User
-from core.models import Comment, SubComment
+from core.models import Comment, SubComment, Currency
 
 
 class Command(BaseCommand):
@@ -37,6 +37,7 @@ class Command(BaseCommand):
             user_creator_2 = User.objects.get(email='merydoe@yopmail.com')
             user_contributor_1 = User.objects.get(email='maricolucas@yopmail.com')
             user_contributor_2 = User.objects.get(email='marinalucas@yopmail.com')
+            currency_one = Currency.objects.get(name='Bolivianos')
             """create tags"""
             tag_1 = TagCampaing.objects.create(
                    name='python'
@@ -66,7 +67,8 @@ class Command(BaseCommand):
                    public_at='2020-12-03 12:52:00',
                    status_campaing=1,
                    is_complete=False,
-                   user=user_creator_1
+                   user=user_creator_1,
+                   currencies=currency_one
             )
             campaing_1.tags.add(tag_1, tag_3)
             campaing_2 = Campaing.objects.create(
@@ -86,7 +88,8 @@ class Command(BaseCommand):
                    public_at='2020-10-05 12:52:00',
                    status_campaing=1,
                    is_complete=False,
-                   user=user_creator_2
+                   user=user_creator_2,
+                   currencies=currency_one
             )
             campaing_2.tags.add(tag_2, tag_1)
             self.success('campaing created.')
@@ -155,6 +158,7 @@ class Command(BaseCommand):
                     description='somewhere',
                     campaing=campaing_2
             )
+
             self.success('rewards created.')
 
             """create payments"""

@@ -29,18 +29,23 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
-INSTALLED_APPS = [
+APPS_LOCAL = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+APPS_THIRDPARTY = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'corsheaders',
+]
+
+APPS_API = [
     'core',
     'user',
     'biography',
@@ -52,7 +57,10 @@ INSTALLED_APPS = [
     'like',
     'newscampaing',
     'comment',
+    'currency',
 ]
+
+INSTALLED_APPS = APPS_LOCAL + APPS_THIRDPARTY + APPS_API
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -106,6 +106,14 @@ class TagCampaing(models.Model):
         return self.name
 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=100, default="Bolivianos")
+    symbol = models.CharField(max_length=10, default="$Bs")
+
+    def __str__(self):
+        return self.name
+
+
 class Campaing(models.Model):
     STATUS_CAMPAING = (
             (0, 'begin'),
@@ -140,7 +148,13 @@ class Campaing(models.Model):
             on_delete=models.CASCADE,
             related_name='user_campaing'
     )
-    tags = models.ManyToManyField(TagCampaing)
+    tags = models.ManyToManyField(
+            TagCampaing
+    )
+    currencies = models.ForeignKey(
+            Currency,
+            on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.title + ' by  ' + self.user.get_full_name()
